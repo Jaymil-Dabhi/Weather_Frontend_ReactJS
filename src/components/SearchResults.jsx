@@ -6,7 +6,7 @@ const SearchResults = (props) => {
 
   const fetchWeatherInfo = async (cityName) => {
     try {
-      const response = await axios.get(`/api/weather?city=${encodeURIComponent(cityName)}`);
+      const response = await axios.get(`http://localhost:8082/weather-forecast/api/temperature/${encodeURIComponent(cityName)}`);
       const weatherData = response.data; // Assuming backend returns weather data
       // Handle weather data as needed (e.g., display weather info)
       console.log('Weather Info:', weatherData);
@@ -25,23 +25,22 @@ const SearchResults = (props) => {
             key={res.id}
             className='py-2 px-4 cursor-pointer text-gray_900 hover:text-white hover:bg-indigo_400 focus:bg-indigo_400 focus:text-white focus:outline-none transition-opacity'
             tabIndex='0'
-            onClick={() => handleCityInfo(res.name)}>
+            onClick={() => {
+              handleCityInfo(res.name);
+              fetchWeatherInfo(res.name);
+            }}>
             {res.name}, {res.region}, {res.country}
           </li>
         ))
       ) : searchQuery !== '' && searchResults.length === 0 ? (
         <li className='py-2 px-4'>No results found...</li>
       ) : (
-        <>
-          <div className='h-[91px] flex flex-col justify-center gap-[16px] py-2 px-4 text-gray_900 '>
-            <h3 className='text-headline_sm font-semibold'>Recent</h3>
-            <p
-              className='text-body_1
-                '>
-              You have no recent locations
-            </p>
-          </div>
-        </>
+        <div className='h-[91px] flex flex-col justify-center gap-[16px] py-2 px-4 text-gray_900'>
+          <h3 className='text-headline_sm font-semibold'>Recent</h3>
+          <p className='text-body_1'>
+            You have no recent locations
+          </p>
+        </div>
       )}
     </ul>
   );
